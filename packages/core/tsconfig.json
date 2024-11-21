@@ -1,6 +1,11 @@
 {
   "extends": "@jimp/config-typescript/base.json",
   "compilerOptions": {
-    "outDir": "dist"
+    "outDir": "dist",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "paths": {
+      "#file-type/core": ["./src/polyfills/esm.ts"]
+    }
   }
 }

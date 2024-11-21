@@ -8,8 +8,8 @@
   "scripts": {
     "lint": "eslint .",
     "test-off": "vitest",
-    "build": "tshy",
-    "dev": "tshy --watch",
+    "build": "tsup",
+    "dev": "tsup --watch",
     "clean": "rm -rf node_modules .tshy .tshy-build dist .turbo"
   },
   "author": "Andrew Lisowski <lisowski54@gmail.com>",
@@ -20,7 +20,7 @@
     "@jimp/utils": "workspace:*",
     "await-to-js": "^3.0.0",
     "exif-parser": "^0.1.12",
-    "file-type": "^16.0.0",
+    "file-type": "^19.6.0",
     "mime": "3"
   },
   "devDependencies": {
@@ -32,6 +32,7 @@
     "@types/node": "^18.19.48",
     "eslint": "^9.9.1",
     "tshy": "^3.0.2",
+    "tsup": "^8.3.5",
     "typescript": "^5.5.4",
     "vite-plugin-node-polyfills": "^0.22.0",
     "vitest": "^2.0.5"
@@ -49,21 +50,21 @@
     "./package.json": "./package.json",
     ".": {
       "import": {
-        "types": "./dist/esm/index.d.ts",
-        "default": "./dist/esm/index.js"
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
       },
       "require": {
-        "types": "./dist/commonjs/index.d.ts",
-        "default": "./dist/commonjs/index.js"
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
       }
     }
   },
-  "main": "./dist/commonjs/index.js",
-  "types": "./dist/commonjs/index.d.ts",
+  "main": "./dist/index.cjs",
+  "types": "./dist/index.d.cts",
   "type": "module",
   "publishConfig": {
     "access": "public"
   },
   "sideEffects": false,
-  "module": "./dist/esm/index.js"
+  "module": "./dist/index.js"
 }
