@@ -1,6 +1,6 @@
 import { Bitmap, Format, JimpClass, Edge } from "@jimp/types";
 import { cssColorToHex, scan, scanIterator } from "@jimp/utils";
-import fileType from "file-type/core.js";
+import { fileTypeFromBuffer } from "./utils/fileTypeFromBuffer.js";
 import { to } from "await-to-js";
 import { existsSync, readFile, writeFile } from "@jimp/file-ops";
 import mime from "mime/lite.js";
@@ -90,7 +90,7 @@ export interface JimpPlugin {
 }
 
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
-  k: infer I
+  k: infer I,
 ) => void
   ? I
   : never;
@@ -225,7 +225,7 @@ export function createJimp<
      */
     static async read(
       url: string | Buffer | ArrayBuffer,
-      options?: MimeTypeToDecodeOptions
+      options?: MimeTypeToDecodeOptions,
     ) {
       if (Buffer.isBuffer(url) || url instanceof ArrayBuffer) {
         return this.fromBuffer(url);
@@ -292,8 +292,8 @@ export function createJimp<
       if (Array.isArray(bitmap.data)) {
         data = Buffer.concat(
           bitmap.data.map((hex) =>
-            Buffer.from(hex.toString(16).padStart(8, "0"), "hex")
-          )
+            Buffer.from(hex.toString(16).padStart(8, "0"), "hex"),
+          ),
         );
       }
 
@@ -329,12 +329,12 @@ export function createJimp<
      */
     static async fromBuffer(
       buffer: Buffer | ArrayBuffer,
-      options?: MimeTypeToDecodeOptions
+      options?: MimeTypeToDecodeOptions,
     ) {
       const actualBuffer =
         buffer instanceof ArrayBuffer ? bufferFromArrayBuffer(buffer) : buffer;
 
-      const mime = await fileType.fromBuffer(actualBuffer);
+      const mime = await fileTypeFromBuffer(actualBuffer);
 
       if (!mime || !mime.mime) {
         throw new Error("Could not find MIME for Buffer");
@@ -347,7 +347,7 @@ export function createJimp<
       }
 
       const image = new CustomJimp(
-        await format.decode(actualBuffer, options?.[format.mime])
+        await format.decode(actualBuffer, options?.[format.mime]),
       ) as InstanceType<typeof CustomJimp> & ExtraMethodMap;
 
       image.mime = mime.mime;
@@ -500,7 +500,7 @@ export function createJimp<
       const mimeType = mime.getType(path);
       await writeFile(
         path,
-        await this.getBuffer(mimeType as SupportedMimeTypes, options)
+        await this.getBuffer(mimeType as SupportedMimeTypes, options),
       );
     }
 
@@ -701,7 +701,7 @@ export function createJimp<
         mode?: BlendMode;
         opacitySource?: number;
         opacityDest?: number;
-      } = {}
+      } = {},
     ) {
       return composite(this, src, x, y, options);
     }
@@ -731,14 +731,14 @@ export function createJimp<
       y: number,
       w: number,
       h: number,
-      cb: (x: number, y: number, idx: number) => any
+      cb: (x: number, y: number, idx: number) => any,
     ): this;
     scan(
       x: number | ((x: number, y: number, idx: number) => any),
       y?: number,
       w?: number,
       h?: number,
-      f?: (x: number, y: number, idx: number) => any
+      f?: (x: number, y: number, idx: number) => any,
     ): this {
       return scan(this, x as any, y as any, w as any, h as any, f as any);
     }
